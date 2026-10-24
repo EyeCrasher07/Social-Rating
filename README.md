@@ -41,4 +41,4 @@ On Windows, run `gradlew.bat build`. The JAR is written to `fabric/26.3/build/li
 
 GNU GPLv3. See [LICENSE](LICENSE).
 
-[Modrinth](https://modrinth.com/project/social-rating) · [Server settings](docs/server-settings.md)
+[Modrinth](https://modrinth.com/project/social-rating) · [Server settings](docs/server-settings.md) ([Русский](docs/server-settings.ru.md))

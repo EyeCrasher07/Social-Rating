@@ -1,10 +1,12 @@
-# Серверные настройки Social Rating 1.0.0
+# Social Rating 1.0.0 server settings
 
-Действующий файл: `config/socialrating/server.json`. Полный пример создаётся рядом
-как `server.example.json`. Параметры, отсутствующие в старом файле, получают значения
-по умолчанию. Файлы владельца не перезаписываются. После редактирования выполни
-`/socialrating admin reload`; подключённые клиенты получат изменения автоматически.
-При неверном значении или повреждённом переводе прежние настройки продолжают работать.
+**English** · [Русский](server-settings.ru.md)
+
+Edit `config/socialrating/server.json`. A complete example is created alongside it
+as `server.example.json`. Missing settings use their default values. Existing files
+are not overwritten. After editing, run `/socialrating admin reload`; connected
+clients receive the changes automatically. If a setting or translation file is
+invalid, the previous configuration stays active.
 
 ```json
 {
@@ -40,74 +42,75 @@
 }
 ```
 
-| Параметр | Что меняет | Допустимые значения |
+| Setting | Purpose | Allowed values |
 | --- | --- | --- |
-| `schemaVersion` | Версия формата настроек | `1` |
-| `defaultLanguage` | Запасной язык и язык сообщений сервера | Код существующего файла в `lang/` |
-| `ratingsEnabled` | Создание и изменение оценок | `true` / `false` |
-| `reportsEnabled` | Подача новых жалоб | `true` / `false` |
-| `commentsEnabled` | Написание комментариев к новым/изменяемым оценкам | `true` / `false` |
-| `allowEditing` | Изменение своей действующей оценки | `true` / `false` |
-| `allowWithdrawal` | Отзыв своей оценки | `true` / `false` |
-| `allowSkippedCategories` | Возможность пропустить включённую категорию | `true` / `false` |
-| `ingenuityEnabled` | Оценивание смекалки | `true` / `false` |
-| `skillEnabled` | Оценивание навыков | `true` / `false` |
-| `friendlinessEnabled` | Оценивание дружелюбия | `true` / `false` |
-| `ratingDistance` | Расстояние для оценки и выбора игрока | 1–64 блока, допускается дробное |
-| `requireLineOfSight` | Проверка видимости при выборе и оценивании | `true` / `false` |
-| `maxCommentLength` | Лимит комментария | 1–1000 символов |
-| `maxReportDetailsLength` | Лимит пояснения жалобы | 1–1000 символов |
-| `maxDecisionReasonLength` | Лимит причины решения модератора | 1–500 символов |
-| `nameplatesEnabled` | Разрешить рейтинг над игроками | `true` / `false` |
-| `interactionHintEnabled` | Разрешить подсказку возле прицела | `true` / `false` |
-| `maxNameplateDistance` | Верхний предел дальности рейтинга для клиентов | 8–64 блока |
-| `summaryRefreshTicks` | Период обновления рейтинга над игроками | 20–1200 клиентских тиков; 100 ≈ 5 секунд |
-| `profileReviewLimit` | Максимум загружаемых отзывов в каждом списке профиля | 1–100; среднее и счётчики учитывают всю базу |
-| `requestsPerSecond` | Максимум запросов одного клиента за секунду | 4–1000; при превышении возвращается ошибка, наказание не назначается |
-| `moderatorPermissionLevel` | Минимальный уровень прав Minecraft для меню/команд модерации | 1–4; по умолчанию 2 |
-| `notifyOperators` | Сообщать модераторам о новой жалобе | `true` / `false` |
-| `remindOperatorsOnJoin` | Напоминать об ожидающих жалобах при входе | `true` / `false`; зависит также от `notifyOperators` |
-| `backupsEnabled` | Включить резервное копирование, включая ручную команду | `true` / `false` |
-| `backupOnStartup` | Создать копию при запуске | `true` / `false`; зависит от `backupsEnabled` |
-| `backupIntervalMinutes` | Интервал автоматических копий | 1–10080 минут |
-| `backupRetention` | Число сохраняемых копий | 1–100 |
+| `schemaVersion` | Settings format version | `1` |
+| `defaultLanguage` | Fallback language and language of server messages | Code of an existing file in `lang/` |
+| `ratingsEnabled` | Create and edit ratings | `true` / `false` |
+| `reportsEnabled` | Submit new reports | `true` / `false` |
+| `commentsEnabled` | Write comments on new or edited ratings | `true` / `false` |
+| `allowEditing` | Edit your active rating | `true` / `false` |
+| `allowWithdrawal` | Withdraw your rating | `true` / `false` |
+| `allowSkippedCategories` | Skip an enabled category | `true` / `false` |
+| `ingenuityEnabled` | Rate ingenuity | `true` / `false` |
+| `skillEnabled` | Rate skill | `true` / `false` |
+| `friendlinessEnabled` | Rate friendliness | `true` / `false` |
+| `ratingDistance` | Maximum distance for selecting and rating a player | 1–64 blocks; decimals allowed |
+| `requireLineOfSight` | Require visibility when selecting and rating a player | `true` / `false` |
+| `maxCommentLength` | Comment length limit | 1–1000 characters |
+| `maxReportDetailsLength` | Report details length limit | 1–1000 characters |
+| `maxDecisionReasonLength` | Moderator decision reason length limit | 1–500 characters |
+| `nameplatesEnabled` | Allow ratings above players | `true` / `false` |
+| `interactionHintEnabled` | Allow the hint near the crosshair | `true` / `false` |
+| `maxNameplateDistance` | Maximum rating display distance clients can choose | 8–64 blocks |
+| `summaryRefreshTicks` | Refresh interval for ratings above players | 20–1200 client ticks; 100 ≈ 5 seconds |
+| `profileReviewLimit` | Maximum reviews loaded in each profile list | 1–100; averages and counts include the entire database |
+| `requestsPerSecond` | Maximum requests per client per second | 4–1000; exceeding it returns an error without punishment |
+| `moderatorPermissionLevel` | Minimum Minecraft permission level for moderation menus and commands | 1–4; default 2 |
+| `notifyOperators` | Notify moderators about new reports | `true` / `false` |
+| `remindOperatorsOnJoin` | Remind moderators about pending reports when they join | `true` / `false`; also requires `notifyOperators` |
+| `backupsEnabled` | Enable backups, including the manual command | `true` / `false` |
+| `backupOnStartup` | Create a backup at startup | `true` / `false`; requires `backupsEnabled` |
+| `backupIntervalMinutes` | Automatic backup interval | 1–10080 minutes |
+| `backupRetention` | Number of backups to keep | 1–100 |
 
-Хотя бы одна категория должна оставаться включённой. Отключение категории влияет
-на новые и редактируемые оценки; сохранённые оценки остаются в истории и среднем.
-Отключение комментариев также сохраняет существующие тексты. Уменьшение лимита
-не обрезает старые данные, но при редактировании текст должен соответствовать новому лимиту.
-Клиентское поле ввода ограничивает число UTF-16 символов; сервер дополнительно проверяет
-число Unicode-кодовых точек.
+At least one category must stay enabled. Disabling a category affects new and
+edited ratings; existing scores remain in the history and average. Disabling
+comments also preserves existing text. Reducing a length limit does not truncate
+saved data, but edited text must meet the new limit. Client input fields count
+UTF-16 code units; the server also checks the number of Unicode code points.
 
-`ratingsEnabled` и `reportsEnabled` управляют новыми изменениями. Просмотр профилей,
-своей истории жалоб и обработка накопившихся жалоб остаются доступны. Отзыв оценки
-управляется отдельно через `allowWithdrawal`. После удаления или отзыва можно
-создать новый отзыв, когда оценивание включено. Шкала — 1–5; автор определяется
-подключением, оценивать себя нельзя.
+`ratingsEnabled` and `reportsEnabled` control new changes. Players can still view
+profiles and their report history, and moderators can process existing reports.
+Withdrawal is controlled separately by `allowWithdrawal`. After a review is
+removed or withdrawn, its author can post a new one when ratings are enabled.
+Scores range from 1 to 5. The connection identifies the author; players cannot
+rate themselves.
 
-Личные настройки — `config/socialrating/client.json`: показ рейтинга, режим `number`
-или `stars`, подсказка, дальность и язык. Клиент может скрыть рейтинг и уменьшить
-дальность в пределах серверного ограничения. Стили меню и тексты меняются через
-ресурс-пак и `lang/*.json`.
+Personal settings are in `config/socialrating/client.json`: rating display,
+`number` or `stars` mode, interaction hint, distance, and language. Clients can
+hide ratings or reduce their display distance within the server limit. Menu
+styles and text can be changed through a resource pack and `lang/*.json`.
 
-## Копирование и восстановление
+## Backups and recovery
 
-Копии находятся в `config/socialrating/backups/database-*.json`. Планировщик
-проверяет срок копирования раз в минуту. Ручная команда:
+Backups are stored in `config/socialrating/backups/database-*.json`. The scheduler
+checks once a minute whether a backup is due. To create a manual backup, run:
 
 ```text
 /socialrating admin backup
 ```
 
-Запись базы и создание копий происходят последовательно в отдельном потоке.
-Успешное сохранение подтверждается после записи на диск. Перед публикацией копии
-проверяется, что она читается; затем удаляются только старые файлы копий мода
-согласно `backupRetention`. Прочие файлы в каталоге не удаляются.
+Database writes and backups run sequentially on a separate thread. A successful
+save is confirmed after the data is written to disk. Each backup is checked for
+readability before it becomes available. Only old mod backup files are removed
+according to `backupRetention`; other files in the directory are left alone.
 
-Для восстановления останови сервер, сохрани текущий `database.json` отдельно,
-скопируй нужную копию вместо него и запусти сервер. Мод не заменяет повреждённые
-данные пустой базой и не восстанавливает старую копию автоматически.
+To restore a backup, stop the server, keep a separate copy of the current
+`database.json`, replace it with the chosen backup, and start the server. The mod
+does not replace damaged data with an empty database or restore an older backup
+automatically.
 
-Изменение `moderatorPermissionLevel` обновляет подсказки команд у подключённых игроков.
-При повышении уровня убедись, что у владельца есть нужные права; консоль сервера
-также позволяет выполнить `/socialrating admin reload`.
+Changing `moderatorPermissionLevel` updates command suggestions for connected
+players. Before raising it, make sure the owner has the required permissions.
+You can also run `/socialrating admin reload` from the server console.
