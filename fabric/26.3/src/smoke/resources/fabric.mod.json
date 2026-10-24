@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "socialrating_smoke",
+  "version": "1",
+  "name": "Social Rating development checks",
+  "environment": "client",
+  "entrypoints": {"client": ["dev.eyecrasher.socialrating.ui.RatingSmoke"]},
+  "depends": {"socialrating": "*"}
+}

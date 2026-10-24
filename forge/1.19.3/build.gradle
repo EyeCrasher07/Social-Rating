@@ -1,0 +1,66 @@
+plugins { id 'java'; id 'net.minecraftforge.gradle' version '7.0.17'; id 'net.minecraftforge.renamer' version '1.0.14' }
+
+java { toolchain.languageVersion = JavaLanguageVersion.of(17) }
+minecraft {
+mappings channel: 'official', version: '1.19.3'
+runs {
+    configureEach { mods { socialrating { source sourceSets.main } }; args '--mixin.config=socialrating.mixins.json' }
+    register('server') { workingDir = layout.buildDirectory.dir('run/server'); args '--nogui' }
+} }
+repositories { minecraft.mavenizer(it); maven fg.forgeMaven; maven fg.minecraftLibsMaven; mavenCentral() }
+dependencies { implementation minecraft.dependency('net.minecraftforge:forge:1.19.3-44.1.23') }
+renamer.enableMixinRefmaps { source(sourceSets.main, 'socialrating'); jar(tasks.named('jar', Jar)); config 'socialrating.mixins.json' }
+renamer.mappings(minecraft.dependency.toSrg)
+tasks.named('jar') { archiveClassifier = 'dev' }
+def productionJar = renamer.classes(tasks.named('jar', Jar)) {
+    archiveClassifier = ''
+    mappings renamer.mixin.generatedMappings
+    output = layout.buildDirectory.file('libs/' + base.archivesName.get() + '-' + project.version + '+1.19.3.jar')
+}
+tasks.named('assemble') { dependsOn productionJar }
+def ratingRenamerLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
+tasks.named('renameJar') { javaLauncher.set(ratingRenamerLauncher) }
+dependencies { annotationProcessor 'org.spongepowered:mixin:0.8.5:processor' }
+
+version = '1.0.0'
+group = 'dev.eyecrasher.socialrating'
+base { archivesName = 'social-rating-forge' }
+tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask).configureEach { archiveVersion = project.version.toString() + '+1.19.3' }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+configurations.matching {
+    it.name.endsWith('CompileClasspath') || it.name.endsWith('RuntimeClasspath') ||
+        it.name in ['compileClasspath', 'runtimeClasspath']
+}.configureEach {
+    attributes.attribute(org.gradle.api.attributes.java.TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+}
+jar {
+    exclude 'main.refmap.json'
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    manifest { attributes 'MixinConfigs': 'socialrating.mixins.json' }
+    from(file('LICENSE')) { rename { 'LICENSE_social-rating.txt' } }
+}
+
+// Verify server data behavior against this Minecraft version's bundled libraries.
+sourceSets.test {
+    compileClasspath += sourceSets.main.compileClasspath
+    runtimeClasspath += sourceSets.main.runtimeClasspath
+}
+tasks.named('compileTestJava', JavaCompile) {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+    options.release = 17
+}
+tasks.named('test') { enabled = false }
+['RatingStore', 'ServerFiles', 'RatingFeatures'].each { suite ->
+    tasks.register('verify' + suite, JavaExec) {
+        dependsOn tasks.named('testClasses')
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'dev.eyecrasher.socialrating.' + suite + 'Test'
+        javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
+    }
+}
+tasks.named('check') { dependsOn 'verifyRatingStore', 'verifyServerFiles', 'verifyRatingFeatures' }

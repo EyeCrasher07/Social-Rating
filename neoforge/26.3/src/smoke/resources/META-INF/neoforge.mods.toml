@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="GPL-3.0"
+[[mods]]
+modId="socialrating_smoke"
+version="1.0.0"
+displayName="Social Rating verification"

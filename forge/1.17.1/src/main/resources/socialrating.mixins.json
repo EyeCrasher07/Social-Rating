@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.eyecrasher.socialrating.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "client": [
+    "AvatarRendererMixin",
+    "HudHintMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8.2",
+  "refmap": "socialrating.refmap.json"
+}

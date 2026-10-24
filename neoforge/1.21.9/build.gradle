@@ -1,0 +1,50 @@
+plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.148' }
+
+java { toolchain.languageVersion = JavaLanguageVersion.of(21) }
+neoForge { version = '21.9.16-beta'
+mods { socialrating { sourceSet(sourceSets.main) } }
+    runs { server { server(); gameDirectory = file('build/run/server'); programArgument '--nogui' } }
+}
+repositories { mavenCentral() }
+
+version = '1.0.0'
+group = 'dev.eyecrasher.socialrating'
+base { archivesName = 'social-rating-neoforge' }
+tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask).configureEach { archiveVersion = project.version.toString() + '+1.21.9' }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+configurations.matching {
+    it.name.endsWith('CompileClasspath') || it.name.endsWith('RuntimeClasspath') ||
+        it.name in ['compileClasspath', 'runtimeClasspath']
+}.configureEach {
+    attributes.attribute(org.gradle.api.attributes.java.TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+}
+jar {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    manifest { attributes 'MixinConfigs': 'socialrating.mixins.json' }
+    from(file('LICENSE')) { rename { 'LICENSE_social-rating.txt' } }
+}
+
+// Verify server data behavior against this Minecraft version's bundled libraries.
+sourceSets.test {
+    compileClasspath += sourceSets.main.compileClasspath
+    runtimeClasspath += sourceSets.main.runtimeClasspath
+}
+tasks.named('compileTestJava', JavaCompile) {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+    options.release = 21
+}
+tasks.named('test') { enabled = false }
+['RatingStore', 'ServerFiles', 'RatingFeatures'].each { suite ->
+    tasks.register('verify' + suite, JavaExec) {
+        dependsOn tasks.named('testClasses')
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'dev.eyecrasher.socialrating.' + suite + 'Test'
+        javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+    }
+}
+tasks.named('check') { dependsOn 'verifyRatingStore', 'verifyServerFiles', 'verifyRatingFeatures' }

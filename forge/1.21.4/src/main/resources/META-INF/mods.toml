@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="GPL-3.0-only"
+issueTrackerURL="https://github.com/EyeCrasher07/Social-Rating/issues"
+[[mods]]
+modId="socialrating"
+version="1.0.0"
+displayName="Social Rating"
+authors="EyeCrasher07"
+logoFile="assets/socialrating/icon.png"
+displayURL="https://github.com/EyeCrasher07/Social-Rating"
+description="Player ratings, reviews and report moderation."
+[[dependencies.socialrating]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.21.4]"
+ordering="NONE"
+side="BOTH"

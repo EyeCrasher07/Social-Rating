@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "socialrating",
+  "version": "1.0.0",
+  "name": "Social Rating",
+  "icon": "assets/socialrating/icon.png",
+  "description": "Player ratings, reviews and report moderation.",
+  "authors": [
+    "EyeCrasher07"
+  ],
+  "license": "GPL-3.0",
+  "contact": {
+    "sources": "https://github.com/EyeCrasher07/Social-Rating",
+    "issues": "https://github.com/EyeCrasher07/Social-Rating/issues",
+    "homepage": "https://modrinth.com/project/social-rating"
+  },
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.eyecrasher.socialrating.RatingPlatform"
+    ],
+    "client": [
+      "dev.eyecrasher.socialrating.RatingClientPlatform"
+    ]
+  },
+  "mixins": [
+    "socialrating.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "=1.18",
+    "java": ">=17",
+    "fabric": ">=0.44.0"
+  }
+}

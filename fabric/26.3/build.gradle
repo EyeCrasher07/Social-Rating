@@ -1,0 +1,86 @@
+plugins { id 'net.fabricmc.fabric-loom' version '1.17.21' }
+
+group = 'dev.eyecrasher.socialrating'
+version = project.mod_version
+base { archivesName = 'social-rating-fabric' }
+tasks.withType(org.gradle.api.tasks.bundling.AbstractArchiveTask).configureEach { archiveVersion = project.version.toString() + '+26.3' }
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    withSourcesJar()
+}
+repositories { mavenCentral() }
+dependencies {
+    minecraft 'com.mojang:minecraft:26.3'
+    implementation 'net.fabricmc:fabric-loader:0.19.5'
+    implementation 'net.fabricmc.fabric-api:fabric-api:0.162.0+26.3'
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.withType(Jar).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(file('LICENSE')) { rename { 'LICENSE_social-rating.txt' } }
+}
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand(version: project.version) }
+}
+tasks.register('verifyRatingStore', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.eyecrasher.socialrating.RatingStoreTest'
+}
+tasks.register('verifyServerFiles', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.eyecrasher.socialrating.ServerFilesTest'
+}
+tasks.register('verifyRatingLanguage', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.eyecrasher.socialrating.RatingLanguageTest'
+}
+tasks.named('test') { enabled = false }
+tasks.register('verifyRatingFeatures', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.eyecrasher.socialrating.RatingFeaturesTest'
+}
+tasks.named('check') { dependsOn verifyRatingStore, verifyServerFiles, verifyRatingLanguage, verifyRatingFeatures }
+loom {
+    runs {
+        client { runDir 'run/client' }
+        server { runDir 'run/server'; programArg 'nogui' }
+    }
+}
+
+// A separate development mod drives the real UI. It is never packaged in the mod JAR.
+if (project.hasProperty('smokeTest')) {
+    sourceSets {
+        smoke {
+            compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+            runtimeClasspath += sourceSets.main.runtimeClasspath
+        }
+    }
+    loom.mods {
+        socialrating { sourceSet sourceSets.main }
+        socialrating_smoke { sourceSet sourceSets.smoke }
+    }
+    loom.runs {
+        hostSmoke {
+            client(); source sourceSets.smoke
+            runDir 'run/smoke-pair/host'
+            programArgs '--username', 'RatingTester', '--width', '960', '--height', '720'
+            vmArgs '-Xmx1500M', '-Dsocialrating.smoke.shared=' + file('run/smoke-pair').absolutePath,
+                    '-Dsocialrating.smoke.port=' + (project.findProperty('smokePort') ?: '25593')
+        }
+        guestSmoke {
+            client(); source sourceSets.smoke
+            runDir 'run/smoke-pair/guest'
+            programArgs '--username', 'RatingFriend', '--width', '960', '--height', '720',
+                    '--quickPlayMultiplayer', '127.0.0.1:' + (project.findProperty('smokePort') ?: '25593')
+            vmArgs '-Xmx1200M', '-Dsocialrating.smoke.guest=true',
+                    '-Dsocialrating.smoke.shared=' + file('run/smoke-pair').absolutePath
+        }
+    }
+}

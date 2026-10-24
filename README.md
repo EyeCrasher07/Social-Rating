@@ -12,11 +12,11 @@ Social Rating adds player reputation to your Minecraft server through ratings, r
 
 ## Requirements
 
-- Minecraft 26.3 with Fabric Loader 0.19.5 or later.
-- [Fabric API](https://modrinth.com/mod/fabric-api) for Minecraft 26.3.
-- Java 25 or later.
+- Minecraft 1.16.5–26.3 with the matching Fabric, Forge, or NeoForge build.
+- [Fabric API](https://modrinth.com/mod/fabric-api) for Fabric builds.
+- The Java version required by your Minecraft version. See the [compatibility table](docs/compatibility.md).
 
-Install the mod and Fabric API on both the server and clients. Ratings are specific to each server.
+Install the mod on both the server and clients. Fabric also needs Fabric API on both sides. Ratings are specific to each server. Some Minecraft versions do not have releases of every loader.
 
 ## Getting started
 
@@ -28,17 +28,19 @@ Server operators use `/socialrating admin` to review reports. Server rules, edit
 
 ## Build
 
-Use JDK 25:
+Each `<loader>/<minecraft-version>/` folder is a standalone Gradle project. For Minecraft 26.3, use JDK 25:
 
 ```sh
 cd fabric/26.3
 ./gradlew build
 ```
 
-On Windows, run `gradlew.bat build`. The JAR is written to `fabric/26.3/build/libs/`.
+On Windows, run `gradlew.bat build`. The result is `fabric/26.3/build/libs/social-rating-fabric-1.0.0+26.3.jar`.
+
+To build and collect several versions, use `python3 tools/build.py`. Select a single build with `--target fabric-26.3`. See [build requirements](docs/compatibility.md#building) for older versions and JDK options. Collected JARs are placed in `dist/social-rating-1.0.0/`.
 
 ## License
 
 GNU GPLv3. See [LICENSE](LICENSE).
 
-[Modrinth](https://modrinth.com/project/social-rating) · [Server settings](docs/server-settings.md) ([Русский](docs/server-settings.ru.md))
+[Modrinth](https://modrinth.com/project/social-rating) · [Compatibility](docs/compatibility.md) ([Русский](docs/compatibility.ru.md)) · [Server settings](docs/server-settings.md) ([Русский](docs/server-settings.ru.md))
